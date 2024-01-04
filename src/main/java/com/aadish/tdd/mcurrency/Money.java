@@ -21,8 +21,14 @@ public class Money implements Expression {
 		return new Money(amount, "CHF");
 	}
 	
-	public Money times(int multiplier) {
+	@Override
+	public Expression times(int multiplier) {
 		return new Money(this.amount * multiplier, this.currency);
+	}
+	
+	@Override
+	public Money reduce(Bank bank, String to) {
+		return new Money(this.amount / bank.rate(this.currency, to), to);
 	}
 	
 	public boolean equals(Object other) {
@@ -36,7 +42,8 @@ public class Money implements Expression {
 		return "Money [amount=" + amount + ", currency=" + currency + "]";
 	}
 	
-	public Expression plus(Money addend) {
-		return new Money(amount + addend.amount, this.currency);
+	@Override
+	public Expression plus(Expression addend) {
+		return new Sum(this, addend);
 	}
 }
